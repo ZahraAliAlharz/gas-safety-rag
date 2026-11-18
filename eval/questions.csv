@@ -1,0 +1,21 @@
+id,lang,question,answerable,gold_answer,gold_doc,gold_page
+en-01,en,What is the boiling point of liquid nitrogen?,yes,-320.5°F (-195.8°C) at 1 atm,safetygram-7-liquid-nitrogen,2
+ar-01,ar,ما هي درجة غليان النيتروجين السائل؟,yes,-320.5°F (-195.8°C) at 1 atm,safetygram-7-liquid-nitrogen,2
+en-02,en,What is the flammable range of gaseous hydrogen in air?,yes,4% to 75% by volume,safetygram-4-gaseous-hydrogen,1
+ar-02,ar,ما هو نطاق الاشتعال للهيدروجين الغازي في الهواء؟,yes,4% to 75% by volume,safetygram-4-gaseous-hydrogen,1
+en-03,en,What first aid should be given for skin contact with liquid oxygen?,yes,"Remove restrictive clothing, do not rub the frozen area, place it in a warm water bath not exceeding 105°F (40°C), never use dry heat, and call a physician",safetygram-6-liquid-oxygen,8
+ar-03,ar,ما هي الإسعافات الأولية التي يجب تقديمها في حالة تلامس الجلد مع الأكسجين السائل؟,yes,"Remove restrictive clothing, do not rub the frozen area, place it in a warm water bath not exceeding 105°F (40°C), never use dry heat, and call a physician",safetygram-6-liquid-oxygen,8
+en-04,en,"What minimum oxygen concentration is required for personnel to work without supplied air, according to the liquid nitrogen Safetygram?",yes,19.5% oxygen concentration,safetygram-7-liquid-nitrogen,6
+ar-04,ar,ما هو الحد الأدنى لتركيز الأكسجين المطلوب للعاملين للعمل دون هواء معاد تزويده، وفقًا لنشرة السلامة الخاصة بالنيتروجين السائل؟,yes,19.5% oxygen concentration,safetygram-7-liquid-nitrogen,6
+en-05,en,What PPE is recommended when handling gaseous hydrogen cylinders?,yes,"Flame retardant protective clothing, safety glasses, safety shoes, hard hats, personal gas monitors, and sturdy work gloves",safetygram-4-gaseous-hydrogen,6
+ar-05,ar,ما هي معدات الحماية الشخصية الموصى بها عند التعامل مع أسطوانات الهيدروجين الغازي؟,yes,"Flame retardant protective clothing, safety glasses, safety shoes, hard hats, personal gas monitors, and sturdy work gloves",safetygram-4-gaseous-hydrogen,6
+en-06,en,What is the minimum safe distance that electrical equipment must maintain from a gaseous hydrogen storage vessel?,yes,15 feet (4 meters),safetygram-4-gaseous-hydrogen,5
+ar-06,ar,ما هي المسافة الآمنة الدنيا التي يجب أن تحافظ عليها المعدات الكهربائية من وعاء تخزين الهيدروجين الغازي؟,yes,15 feet (4 meters),safetygram-4-gaseous-hydrogen,5
+en-07,en,What is the current retail price per liter of liquid nitrogen?,no,Not covered in the provided documents,,
+ar-07,ar,ما هو السعر الحالي بالتجزئة لليتر الواحد من النيتروجين السائل؟,no,هذا غير مذكور في الوثائق المتوفرة,,
+en-08,en,Does Air Products provide a mobile app for remotely monitoring cryogenic tank levels?,no,Not covered in the provided documents,,
+ar-08,ar,هل توفر شركة Air Products تطبيقًا للهاتف المحمول لمراقبة مستويات خزانات الغازات المبردة عن بُعد؟,no,هذا غير مذكور في الوثائق المتوفرة,,
+en-09,en,What is the carbon footprint (CO2 emissions) of producing one ton of liquid oxygen?,no,Not covered in the provided documents,,
+ar-09,ar,ما هو الأثر الكربوني (انبعاثات ثاني أكسيد الكربون) لإنتاج طن واحد من الأكسجين السائل؟,no,هذا غير مذكور في الوثائق المتوفرة,,
+en-10,en,What is the maximum allowable truck transport distance for liquid hydrogen under DOT regulations?,no,Not covered in the provided documents,,
+ar-10,ar,ما هي أقصى مسافة نقل مسموح بها بالشاحنات للهيدروجين السائل بموجب لوائح وزارة النقل الأمريكية (DOT)؟,no,هذا غير مذكور في الوثائق المتوفرة,,

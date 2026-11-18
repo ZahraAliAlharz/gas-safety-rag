@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# corpus PDFs (downloaded, not committed) and derived full-text extracts
+data/pdfs/*.pdf
+data/chunks.json
+
+# embedding cache
+data/embeddings/
+
+.env
+*.egg-info/
+.DS_Store
+*.log
