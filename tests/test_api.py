@@ -1,10 +1,21 @@
+from pathlib import Path
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
 from app.main import app
+from src.retrieve import Retriever
+from tests.fixtures import FIXTURE_CHUNKS
 
 client = TestClient(app)
+
+
+def _fixture_retriever(tmp_path: Path) -> Retriever:
+    return Retriever(
+        chunks=FIXTURE_CHUNKS,
+        embeddings_path=tmp_path / "embeddings.npy",
+        ids_path=tmp_path / "ids.npy",
+    )
 
 
 def test_health():
@@ -28,7 +39,9 @@ def test_ask_no_rag_is_mocked_and_returns_shape(mock_call_ollama):
 
 
 @patch("src.answer.call_ollama")
-def test_ask_rag_mode_returns_retrieved_chunks(mock_call_ollama):
+@patch("app.main.get_retriever")
+def test_ask_rag_mode_returns_retrieved_chunks(mock_get_retriever, mock_call_ollama, tmp_path):
+    mock_get_retriever.return_value = _fixture_retriever(tmp_path)
     mock_call_ollama.return_value = "Not covered in the provided documents"
 
     resp = client.post(

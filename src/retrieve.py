@@ -89,11 +89,17 @@ def load_or_build_embeddings(
 
 
 class Retriever:
-    def __init__(self, chunks: list[Chunk] | None = None, top_k: int = TOP_K):
+    def __init__(
+        self,
+        chunks: list[Chunk] | None = None,
+        top_k: int = TOP_K,
+        embeddings_path: Path = EMBEDDINGS_PATH,
+        ids_path: Path = EMBEDDINGS_IDS_PATH,
+    ):
         self.chunks = chunks if chunks is not None else load_corpus()
         self.chunks_by_id = {c.chunk_id: c for c in self.chunks}
         self.top_k = top_k
-        self.vectors, self.ids = load_or_build_embeddings(self.chunks)
+        self.vectors, self.ids = load_or_build_embeddings(self.chunks, embeddings_path, ids_path)
 
     def retrieve(self, question: str, top_k: int | None = None) -> list[RetrievedChunk]:
         k = top_k if top_k is not None else self.top_k
