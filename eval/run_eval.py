@@ -2,9 +2,13 @@
 with an LLM judge, and save everything to eval/results.csv.
 
 Deterministic checks (no judge call needed):
-  - refused:          detected from the exact refusal string
-  - hit@3:            whether gold_page appears among the top-3 retrieved pages (RAG only)
-  - citation_correct: whether a citation matches (gold_doc, gold_page) -- only meaningful
+  - refused:            detected from the exact refusal string
+  - hit_at_3_exact_page: whether gold_page appears among the top-3 retrieved pages (RAG only)
+  - hit_at_3_page_pm1:   whether a top-3 chunk from gold_doc is within 1 page of gold_page
+  - hit_at_3_doc:        whether any top-3 chunk comes from gold_doc at all
+  - script_leak:         for Arabic rows, whether the answer body (outside [..] citations)
+                         contains Latin or CJK letters; "n/a" for English rows
+  - citation_correct:   whether a citation matches (gold_doc, gold_page) -- only meaningful
                        for answerable, non-refused rows; "n/a" otherwise
   - correct/hallucinated when the question is unanswerable: refusing is correct and not
                        hallucinated; answering instead is wrong and is a hallucination
@@ -20,7 +24,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.answer import answer_question
+from src.answer import answer_question, has_script_leak
 from src.retrieve import Retriever
 
 EVAL_DIR = Path(__file__).resolve().parent
@@ -79,9 +83,23 @@ def run_all() -> pd.DataFrame:
             retrieved_pages = [r.chunk.page for r in result.retrieved_chunks]
             retrieved_docs = [r.chunk.document for r in result.retrieved_chunks]
 
-            hit_at_3 = ""
+            hit_at_3_exact_page = ""
+            hit_at_3_page_pm1 = ""
+            hit_at_3_doc = ""
             if use_rag and answerable:
-                hit_at_3 = "yes" if int(q["gold_page"]) in retrieved_pages else "no"
+                gold_page = int(q["gold_page"])
+                gold_doc = q["gold_doc"]
+                same_doc_pages = [
+                    page for doc, page in zip(retrieved_docs, retrieved_pages) if doc == gold_doc
+                ]
+                hit_at_3_exact_page = "yes" if gold_page in same_doc_pages else "no"
+                hit_at_3_page_pm1 = (
+                    "yes" if any(abs(p - gold_page) <= 1 for p in same_doc_pages) else "no"
+                )
+                hit_at_3_doc = "yes" if gold_doc in retrieved_docs else "no"
+
+            script_leak = has_script_leak(result.answer) if q["lang"] == "ar" else None
+            script_leak_label = "n/a" if script_leak is None else ("yes" if script_leak else "no")
 
             if not answerable:
                 citation_correct = "n/a"
@@ -120,7 +138,10 @@ def run_all() -> pd.DataFrame:
                     "correct": correct,
                     "hallucinated": hallucinated,
                     "citation_correct": citation_correct,
-                    "hit_at_3": hit_at_3,
+                    "hit_at_3_exact_page": hit_at_3_exact_page,
+                    "hit_at_3_page_pm1": hit_at_3_page_pm1,
+                    "hit_at_3_doc": hit_at_3_doc,
+                    "script_leak": script_leak_label,
                     "human_check": "",
                 }
             )

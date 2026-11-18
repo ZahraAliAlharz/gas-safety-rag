@@ -45,10 +45,12 @@ def _build_rag_prompt(question: str, lang: str, chunks: list[RetrievedChunk]) ->
         instructions = (
             "أنت مساعد سلامة يجيب فقط بالاعتماد على المقتطفات المرجعية أدناه.\n"
             "القواعد:\n"
-            "1. أجب بنفس لغة السؤال (العربية).\n"
+            "1. أجب بنفس لغة السؤال (العربية)، واكتب نص الإجابة نفسه بالحروف العربية فقط "
+            "-- لا تستخدم أي حروف لاتينية أو حروف صينية/يابانية/كورية أو أي لغة أخرى داخل نص الإجابة.\n"
             "2. يجب أن تضع بعد كل جملة فيها معلومة مرجعًا بالصيغة [اسم_المستند, page رقم_الصفحة]، "
-            "حيث يُكتب اسم المستند بالأحرف اللاتينية الإنجليزية تمامًا كما ورد في عنوان المقتطف أعلاه "
-            "(لا تترجمه إلى العربية أو لغة أخرى). مثال: [safetygram-7-liquid-nitrogen, page 1]\n"
+            "وهذا الاستشهاد بين الأقواس هو الاستثناء الوحيد: يُكتب اسم المستند بالأحرف اللاتينية "
+            "الإنجليزية تمامًا كما ورد في عنوان المقتطف أعلاه، بدون أي تغيير أو ترجمة. "
+            "مثال: [safetygram-7-liquid-nitrogen, page 1]\n"
             f'3. إذا كانت المقتطفات لا تدعم إجابة السؤال، أجب بالضبط: "{REFUSAL_AR}" ولا تضف شيئًا آخر.\n'
         )
         label_context = "المقتطفات المرجعية"
@@ -79,7 +81,8 @@ def _build_rag_prompt(question: str, lang: str, chunks: list[RetrievedChunk]) ->
 def _build_no_rag_prompt(question: str, lang: str) -> str:
     if lang == "ar":
         return (
-            "أجب على السؤال التالي بنفس لغته (العربية)، بدون أي معلومات مرجعية إضافية.\n\n"
+            "أجب على السؤال التالي بنفس لغته (العربية)، بدون أي معلومات مرجعية إضافية. "
+            "اكتب الإجابة بالحروف العربية فقط، بدون أي حروف لاتينية أو صينية/يابانية/كورية أو أي لغة أخرى.\n\n"
             f"السؤال: {question}\nالإجابة:"
         )
     return (
@@ -124,6 +127,17 @@ def extract_citations(answer_text: str) -> list[Citation]:
 def is_refusal(answer_text: str) -> bool:
     normalized = answer_text.strip()
     return REFUSAL_EN in normalized or REFUSAL_AR in normalized
+
+
+_BRACKETED_RE = re.compile(r"\[[^\]]*\]")
+_LATIN_LETTER_RE = re.compile(r"[A-Za-z]")
+_CJK_RE = re.compile(r"[一-鿿぀-ヿ가-힣]")
+
+
+def has_script_leak(answer_text: str) -> bool:
+    """True if an Arabic answer contains Latin or CJK letters outside citation brackets."""
+    without_citations = _BRACKETED_RE.sub("", answer_text)
+    return bool(_LATIN_LETTER_RE.search(without_citations) or _CJK_RE.search(without_citations))
 
 
 def answer_question(
